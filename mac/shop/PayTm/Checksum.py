@@ -1,7 +1,9 @@
+# pip install pycryptodome
 import base64
 import string
 import random
 import hashlib
+
 from Crypto.Cipher import AES
 
 
@@ -21,10 +23,9 @@ def generate_checksum(param_dict, merchant_key, salt=None):
 
     return __encode__(hash_string, IV, merchant_key)
 
-
 def generate_refund_checksum(param_dict, merchant_key, salt=None):
     for i in param_dict:
-        if ("|" in param_dict[i]):
+        if("|" in param_dict[i]):
             param_dict = {}
             exit()
     params_string = __get_param_string__(param_dict)
@@ -60,17 +61,20 @@ def verify_checksum(param_dict, merchant_key, checksum):
     # Get salt
     paytm_hash = __decode__(checksum, IV, merchant_key)
     salt = paytm_hash[-4:]
-    calculated_checksum = generate_checksum(
-        param_dict, merchant_key, salt=salt)
+    calculated_checksum = generate_checksum(param_dict, merchant_key, salt=salt)
     return calculated_checksum == checksum
-
 
 def verify_checksum_by_str(param_str, merchant_key, checksum):
+    # Remove checksum
+    #if 'CHECKSUMHASH' in param_dict:
+        #param_dict.pop('CHECKSUMHASH')
+
+    # Get salt
     paytm_hash = __decode__(checksum, IV, merchant_key)
     salt = paytm_hash[-4:]
-    calculated_checksum = generate_checksum_by_str(
-        param_str, merchant_key, salt=salt)
+    calculated_checksum = generate_checksum_by_str(param_str, merchant_key, salt=salt)
     return calculated_checksum == checksum
+
 
 
 def __id_generator__(size=6, chars=string.ascii_uppercase + string.digits + string.ascii_lowercase):
@@ -80,7 +84,7 @@ def __id_generator__(size=6, chars=string.ascii_uppercase + string.digits + stri
 def __get_param_string__(params):
     params_string = []
     for key in sorted(params.keys()):
-        if "REFUND" in params[key] or "|" in params[key]:
+        if("REFUND" in params[key] or "|" in params[key]):
             respons_dict = {}
             exit()
         value = params[key]
@@ -88,11 +92,8 @@ def __get_param_string__(params):
     return '|'.join(params_string)
 
 
-def __pad__(s): return s + (BLOCK_SIZE - len(s) %
-                            BLOCK_SIZE) * chr(BLOCK_SIZE - len(s) % BLOCK_SIZE)
-
-
-def __unpad__(s): return s[0:-ord(s[-1])]
+__pad__ = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * chr(BLOCK_SIZE - len(s) % BLOCK_SIZE)
+__unpad__ = lambda s: s[0:-ord(s[-1])]
 
 
 def __encode__(to_encode, iv, key):
@@ -121,7 +122,7 @@ def __decode__(to_decode, iv, key):
 
 if __name__ == "__main__":
     params = {
-        "MID": "mid",
+        'MID': 'IcJzZB60380119682987',
         "ORDER_ID": "order_id",
         "CUST_ID": "cust_id",
         "TXN_AMOUNT": "1",
