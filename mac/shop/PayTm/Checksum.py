@@ -66,11 +66,6 @@ def verify_checksum(param_dict, merchant_key, checksum):
 
 
 def verify_checksum_by_str(param_str, merchant_key, checksum):
-    # Remove checksum
-    # if 'CHECKSUMHASH' in param_dict:
-    # param_dict.pop('CHECKSUMHASH')
-
-    # Get salt
     paytm_hash = __decode__(checksum, IV, merchant_key)
     salt = paytm_hash[-4:]
     calculated_checksum = generate_checksum_by_str(
